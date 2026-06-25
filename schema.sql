@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS accounts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  login TEXT NOT NULL UNIQUE,
+  data_encrypted TEXT NOT NULL,
+  organization TEXT DEFAULT NULL,
+  org_status TEXT DEFAULT NULL,
+  org_checked_at DATETIME DEFAULT NULL,
+  manual_issued_at DATETIME DEFAULT NULL,
+  claimed_at DATETIME DEFAULT NULL
+);

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доступ к Adobe Creative Cloud</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #eb1000; /* Adobe Red */
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --input-bg: #f9fafb;
+            --hover-bg: #f3f4f6;
+            --accent: #2563eb;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05), 0 4px 6px rgba(0,0,0,0.02);
+            max-width: 440px;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .data-group {
+            margin-bottom: 20px;
+        }
+
+        .data-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .data-box {
+            display: flex;
+            align-items: center;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            position: relative;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .data-box:hover {
+            border-color: #d1d5db;
+        }
+
+        .data-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-main);
+            flex-grow: 1;
+            word-break: break-all;
+            margin-right: 12px;
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--accent);
+            padding: 6px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .copy-btn:hover {
+            background-color: #dbeafe;
+        }
+
+        .copy-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .org-highlight {
+            background: linear-gradient(90deg, #fee2e2 0%, #ffedd5 100%);
+            border: 1px solid #fecaca;
+        }
+        
+        .org-highlight .data-value {
+            color: #b91c1c;
+            font-weight: 700;
+        }
+
+        .message {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .message.warning {
+            background-color: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .message.error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .instructions {
+            background-color: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.5;
+            margin-top: 24px;
+        }
+
+        .instructions strong {
+            display: block;
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .instructions ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 6px;
+        }
+        
+        /* Toast notification */
+        #toast {
+            visibility: hidden;
+            min-width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: fixed;
+            z-index: 1;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Adobe Creative Cloud</h1>
+        <div class="subtitle">Данные вашего рабочего профиля</div>
+    </div>
+    
+    <% if (error) { %>
+        <div class="message error"><%= message %></div>
+    <% } else { %>
+
+        <% if (message) { %>
+            <div class="message warning">
+                <svg style="width: 16px; height: 16px; display: inline; vertical-align: text-bottom; margin-right: 4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <%= message %>
+            </div>
+        <% } %>
+
+        <div class="data-group">
+            <span class="data-label">Email (Логин)</span>
+            <div class="data-box">
+                <span class="data-value" id="val-login"><%= login %></span>
+                <button class="copy-btn" onclick="copyToClipboard('val-login', 'Логин скопирован!')" title="Копировать">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="data-group">
+            <span class="data-label">Пароль</span>
+            <div class="data-box">
+                <span class="data-value" id="val-password"><%= password || '***' %></span>
+                <button class="copy-btn" onclick="copyToClipboard('val-password', 'Пароль скопирован!')" title="Копировать">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="data-group">
+            <span class="data-label">Текущая организация</span>
+            <div class="data-box org-highlight">
+                <% if (organization) { %>
+                    <span class="data-value" id="val-org"><%= organization %></span>
+                    <button class="copy-btn" onclick="copyToClipboard('val-org', 'Название организации скопировано!')" title="Копировать">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    </button>
+                <% } else { %>
+                    <span class="data-value" style="color: #991b1b; font-style: italic;">Ожидание данных...</span>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <strong>Краткая инструкция по входу:</strong>
+            <ol>
+                <li>Перейдите на сайт <a href="https://account.adobe.com" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 500;">account.adobe.com</a></li>
+                <li>Введите логин и пароль, скопированные выше.</li>
+                <li>Если появится запрос на выбор профиля, <b>обязательно выберите "Профиль компании или учебного заведения"</b> (Company or School Account).</li>
+                <li>Убедитесь, что вы авторизованы в указанной организации.</li>
+            </ol>
+        </div>
+    <% } %>
+</div>
+
+<div id="toast">Текст скопирован!</div>
+
+<script>
+    function copyToClipboard(elementId, successMsg) {
+        var text = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(text).then(function() {
+            var toast = document.getElementById("toast");
+            toast.innerText = successMsg;
+            toast.className = "show";
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        }, function(err) {
+            console.error('Не удалось скопировать текст: ', err);
+            alert("Не удалось скопировать. Скопируйте текст вручную.");
+        });
+    }
+</script>
+
+</body>
+</html>
