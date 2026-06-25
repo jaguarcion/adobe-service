@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление аккаунтами | Adobe Checker</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10b981; /* Emerald */
+            --primary-hover: #059669;
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --accent: #3b82f6; /* Blue */
+            --danger: #ef4444; /* Red */
+            --warning: #f59e0b; /* Amber */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .card {
+            background-color: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 16px;
+            align-items: end;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        input {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background-color: #f9fafb;
+            color: var(--text-main);
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background-color: #fff;
+        }
+
+        button {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        th {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            background-color: #f9fafb;
+        }
+
+        th:first-child { border-top-left-radius: 8px; }
+        th:last-child { border-top-right-radius: 8px; }
+
+        td {
+            font-size: 14px;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #f9fafb;
+        }
+
+        .login-cell {
+            font-weight: 500;
+        }
+
+        .org-cell {
+            color: var(--text-muted);
+        }
+
+        /* Status Pills */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .status-ok { background-color: #d1fae5; color: #065f46; }
+        .status-switched { background-color: #dbeafe; color: #1e40af; }
+        .status-error { background-color: #fee2e2; color: #991b1b; }
+        .status-disabled { background-color: #fef3c7; color: #92400e; }
+        .status-no_org { background-color: #f3f4f6; color: #374151; }
+        .status-not_found { background-color: #f3f4f6; color: #374151; }
+
+        .link-icon {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            padding: 6px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .link-icon:hover {
+            background-color: #eff6ff;
+        }
+
+        .link-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+        
+        /* Toast */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #1f2937;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px;
+            position: fixed;
+            z-index: 1000;
+            top: 20px;
+            right: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+            transform: translateY(-20px);
+        }
+
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-actions">
+        <h1>Панель управления аккаунтами</h1>
+        <button class="btn-secondary" onclick="forceCheck()">
+            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            Обновить статусы
+        </button>
+    </div>
+
+    <div class="card">
+        <h2>
+            <svg style="width: 18px; height: 18px; color: var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            Добавить новый аккаунт
+        </h2>
+        <form action="/admin/add" method="POST">
+            <input type="hidden" name="token" value="<%= token %>">
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="login">Email (Логин)</label>
+                    <input type="email" id="login" name="login" placeholder="account@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Пароль (Шифруется AES-256)</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary">
+                    Добавить
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card" style="padding: 0;">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">ID</th>
+                        <th>Аккаунт (Email)</th>
+                        <th>Текущая Организация</th>
+                        <th>Статус</th>
+                        <th>Последний чек</th>
+                        <th style="text-align: right;">Клиенту</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (accounts.length === 0) { %>
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <svg style="width: 48px; height: 48px; margin: 0 auto 16px; color: #d1d5db;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                    <div>База аккаунтов пуста</div>
+                                </div>
+                            </td>
+                        </tr>
+                    <% } %>
+                    <% accounts.forEach(function(acc) { %>
+                        <tr>
+                            <td style="color: var(--text-muted);"><%= acc.id %></td>
+                            <td class="login-cell"><%= acc.login %></td>
+                            <td class="org-cell">
+                                <% if (acc.organization) { %>
+                                    <%= acc.organization %>
+                                <% } else { %>
+                                    <span style="color: #9ca3af; font-style: italic;">Не определена</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% 
+                                   let statusClass = acc.org_status || 'no_org';
+                                   let statusText = acc.org_status || 'Ожидание';
+                                   if (statusClass === 'ok') statusText = 'Рабочая';
+                                   if (statusClass === 'switched') statusText = 'Переключен';
+                                   if (statusClass === 'error') statusText = 'Ошибка';
+                                   if (statusClass === 'disabled') statusText = 'Заблокирована';
+                                %>
+                                <span class="status status-<%= statusClass %>"><%= statusText %></span>
+                            </td>
+                            <td style="font-size: 13px; color: var(--text-muted);">
+                                <% if (acc.org_checked_at) { %>
+                                    <%= acc.org_checked_at.replace('T', ' ').substring(0, 16) %>
+                                <% } else { %>
+                                    -
+                                <% } %>
+                            </td>
+                            <td style="text-align: right;">
+                                <a href="/account/<%= acc.id %>" target="_blank" class="link-icon" title="Открыть страницу выдачи">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                </a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+    function showToast(message, isError = false) {
+        var toast = document.getElementById("toast");
+        toast.innerText = message;
+        toast.style.backgroundColor = isError ? "#ef4444" : "#10b981";
+        toast.className = "show";
+        setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+    }
+
+    function forceCheck() {
+        fetch('/admin/force-check?token=<%= token %>')
+            .then(res => res.json())
+            .then(data => {
+                showToast(data.message || 'Worker запущен в фоне');
+            })
+            .catch(err => {
+                showToast('Ошибка при запуске Worker', true);
+                console.error(err);
+            });
+    }
+
+    // Checking for query parameters if account creation failed
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) {
+            showToast(urlParams.get('error'), true);
+        }
+    }
+</script>
+
+</body>
+</html>
